@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad">AD</string>
+    <string name="app_open_test_ad_id">/6499/example/app-open</string>
+    <string name="banner_test_ad_id">/6499/example/banner</string>
+    <string name="interstitial_test_ad_id">/6499/example/interstitial</string>
+    <string name="rewarded_test_ad_id">/6499/example/rewarded</string>
+    <string name="rewarded_interstitial_test_ad_id">/21775744923/example/rewarded_interstitial</string>
+    <string name="native_test_ad_id">/6499/example/native</string>
+    <string name="native_video_test_ad_id">/6499/example/native-video</string>
+    <string name="ad_loading_msg">Ad Loading…</string>
+</resources>
