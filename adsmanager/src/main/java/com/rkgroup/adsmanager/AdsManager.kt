@@ -114,12 +114,20 @@ object AdsManager {
      * @param adContainer: Ad Container where do you want to show AD
      * @param adUnit: AD Unit ID
      * @param adSize: Target ad AD size
-     *
+     *@param adContainerVisibility: set adContainer Visibility on ad load Failed
+     * @see View.VISIBLE
+     * @see View.GONE
+     * @see View.INVISIBLE
      * @return AdView that currently loading
      *
      */
     @JvmStatic
-    fun loadBannerAd(adContainer: ViewGroup, adUnit: String, adSize: AdSize): AdView {
+    fun loadBannerAd(
+        adContainer: ViewGroup,
+        adUnit: String,
+        adSize: AdSize,
+        adContainerVisibility: Int = View.GONE
+    ): AdView {
         val mAdView = AdView(adContainer.context)
         mAdView.adSize = adSize
         mAdView.adUnitId = adUnit
@@ -130,8 +138,7 @@ object AdsManager {
             }
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
-                Log.e(TAG, "onAdFailedToLoad: ${adError.message}")
-                super.onAdFailedToLoad(adError)
+                adContainer.visibility = adContainerVisibility
             }
 
         }
@@ -151,11 +158,16 @@ object AdsManager {
      *
      */
     @JvmStatic
-    fun loadBannerAd(adContainer: ViewGroup, adSize: AdSize): AdView {
+    fun loadBannerAd(
+        adContainer: ViewGroup,
+        adSize: AdSize,
+        adContainerVisibility: Int = View.GONE
+    ): AdView {
         return loadBannerAd(
             adContainer,
             adContainer.context.getString(R.string.banner_test_ad_id),
-            adSize
+            adSize,
+            adContainerVisibility
         )
     }
 
@@ -173,8 +185,18 @@ object AdsManager {
      *
      */
     @JvmStatic
-    fun loadAdaptiveBannerAd(activity: Activity, adContainer: ViewGroup, adUnit: String): AdView {
-        return loadBannerAd(adContainer, adUnit, getAdptiveBannerAdSize(activity))
+    fun loadAdaptiveBannerAd(
+        activity: Activity,
+        adContainer: ViewGroup,
+        adUnit: String,
+        adContainerVisibility: Int = View.GONE
+    ): AdView {
+        return loadBannerAd(
+            adContainer,
+            adUnit,
+            getAdaptiveBannerAdSize(activity),
+            adContainerVisibility
+        )
     }
 
     /**
@@ -191,8 +213,18 @@ object AdsManager {
      *
      */
     @JvmStatic
-    fun loadAdaptiveBannerAd(fragment: Fragment, adContainer: ViewGroup, adUnit: String): AdView {
-        return loadBannerAd(adContainer, adUnit, getAdptiveBannerAdSize(fragment.requireActivity()))
+    fun loadAdaptiveBannerAd(
+        fragment: Fragment,
+        adContainer: ViewGroup,
+        adUnit: String,
+        adContainerVisibility: Int = View.GONE
+    ): AdView {
+        return loadBannerAd(
+            adContainer,
+            adUnit,
+            getAdaptiveBannerAdSize(fragment.requireActivity()), adContainerVisibility
+        )
+
     }
 
     /**
@@ -208,8 +240,12 @@ object AdsManager {
      *
      */
     @JvmStatic
-    fun loadAdaptiveBannerAd(activity: Activity, adContainer: ViewGroup): AdView {
-        return loadBannerAd(adContainer, getAdptiveBannerAdSize(activity))
+    fun loadAdaptiveBannerAd(
+        activity: Activity,
+        adContainer: ViewGroup,
+        adContainerVisibility: Int = View.GONE
+    ): AdView {
+        return loadBannerAd(adContainer, getAdaptiveBannerAdSize(activity), adContainerVisibility)
     }
 
     /**
@@ -225,8 +261,16 @@ object AdsManager {
      *
      */
     @JvmStatic
-    fun loadAdaptiveBannerAd(fragment: Fragment, adContainer: ViewGroup): AdView {
-        return loadBannerAd(adContainer, getAdptiveBannerAdSize(fragment.requireActivity()))
+    fun loadAdaptiveBannerAd(
+        fragment: Fragment,
+        adContainer: ViewGroup,
+        adContainerVisibility: Int = View.GONE
+    ): AdView {
+        return loadBannerAd(
+            adContainer,
+            getAdaptiveBannerAdSize(fragment.requireActivity()),
+            adContainerVisibility
+        )
     }
 
     @JvmStatic
@@ -266,7 +310,10 @@ object AdsManager {
      *@param adContainer: Where do you want to show AD
      *@param adUnit: AD unit id
      *@param layoutRes: native Ad view
-     *@param hideAdContainer: Do you want to hide ad container if ad loads failed.Default:true
+     *@param adContainerVisibility: set adContainer Visibility on ad load Failed
+     * @see View.VISIBLE
+     * @see View.GONE
+     * @see View.INVISIBLE
      *
      */
     @JvmStatic
@@ -274,7 +321,7 @@ object AdsManager {
         adContainer: ViewGroup,
         adUnit: String,
         @LayoutRes layoutRes: Int,
-        hideAdContainer: Boolean = true
+        adContainerVisibility: Int = View.GONE
     ) {
         loadNativeAd(adContainer.context, adUnit, object : NativeAdLoadListener {
             override fun onNativeAdLoaded(nativeAd: NativeAd) {
@@ -287,10 +334,7 @@ object AdsManager {
             }
 
             override fun onNativeAdLoadedFail(errorCode: LoadAdError) {
-                if (hideAdContainer) {
-                    adContainer.visibility = View.GONE
-                }
-
+                adContainer.visibility = adContainerVisibility
             }
         })
     }
@@ -298,8 +342,10 @@ object AdsManager {
     /**
      *@param adContainer: Where do you want to show AD
      *@param layoutRes: native Ad view
-     *@param hideAdContainer: Do you want to hide ad container if ad loads failed.Default:Ture
-     *
+     *@param adContainerVisibility: set adContainer Visibility on ad load Failed
+     * @see View.VISIBLE
+     * @see View.GONE
+     * @see View.INVISIBLE
      * This loads Test ads for you
      *
      */
@@ -308,7 +354,7 @@ object AdsManager {
     fun loadNativeAd(
         adContainer: ViewGroup,
         @LayoutRes layoutRes: Int,
-        hideAdContainer: Boolean = true
+        adContainerVisibility: Int = View.GONE
     ) {
         loadNativeAd(adContainer.context, object : NativeAdLoadListener {
             override fun onNativeAdLoaded(nativeAd: NativeAd) {
@@ -321,9 +367,7 @@ object AdsManager {
             }
 
             override fun onNativeAdLoadedFail(errorCode: LoadAdError) {
-                if (hideAdContainer) {
-                    adContainer.visibility = View.GONE
-                }
+                adContainer.visibility = adContainerVisibility
             }
         })
     }
@@ -363,7 +407,7 @@ object AdsManager {
     }
 
 
-    private fun getAdptiveBannerAdSize(activity: Activity): AdSize {
+    private fun getAdaptiveBannerAdSize(activity: Activity): AdSize {
         // Determine the screen width (less decorations) to use for the ad width.
         val display = activity.windowManager.defaultDisplay
         val outMetrics = DisplayMetrics()

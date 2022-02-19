@@ -21,10 +21,12 @@ import com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback
  *
  */
 
-class AppOpenAdManager @JvmOverloads constructor(private val application: Application, private val adUnitID: String = "ca-app-pub-3940256099942544/1033173712") : ActivityLifecycleCallbacks, LifecycleObserver {
+class AppOpenAdManager @JvmOverloads constructor(
+    private val application: Application,
+    private val adUnitID: String = application.getString(R.string.app_open_test_ad_id)
+) : ActivityLifecycleCallbacks, LifecycleObserver {
     private var currentActivity: Activity? = null
     private var appOpenAd: AppOpenAd? = null
-
 
 
     /**
@@ -93,7 +95,7 @@ class AppOpenAdManager @JvmOverloads constructor(private val application: Applic
         currentActivity = null
     }
 
-     fun showAdIfAvailable() {
+    fun showAdIfAvailable(appOpenAdListener: AppOpenAdListener? = null) {
         // Only show ad if there is not already an app open ad currently showing
         // and an ad is available.
         if (currentActivity != null && !isShowingAppOpenAd && isAdAvailable) {
@@ -104,6 +106,9 @@ class AppOpenAdManager @JvmOverloads constructor(private val application: Applic
                         // Set the reference to null so isAdAvailable() returns false.
                         appOpenAd = null
                         isShowingAppOpenAd = false
+                        if (appOpenAdListener != null) {
+                            appOpenAdListener.onAdCompleted()
+                        }
                         fetchAd()
                     }
 
@@ -118,7 +123,9 @@ class AppOpenAdManager @JvmOverloads constructor(private val application: Applic
             appOpenAd!!.fullScreenContentCallback = fullScreenContentCallback
             appOpenAd!!.show(currentActivity!!)
         } else {
-            Log.d(LOG_TAG, "Can not show ad.")
+            if (appOpenAdListener != null) {
+                appOpenAdListener.onAdCompleted()
+            }
             fetchAd()
         }
     }

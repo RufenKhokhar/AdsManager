@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AdsManager</string>
+    <string name="please_wait">Ad Loading...</string>
 </resources>
