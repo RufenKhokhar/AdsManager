@@ -2,6 +2,6 @@
 [![](https://jitpack.io/v/RufenKhokhar/AdsManager.svg)](https://jitpack.io/#RufenKhokhar/AdsManager)
  Easy way to implement Google Ads
  
- Implementaion:
+ Implementaion Guide:
  
- https://jitpack.io/#RufenKhokhar/AdsManager/1.0.0-beta
+ https://rufankhokhar.medium.com/implement-google-ads-with-adsmanager-3f21b861798f
