@@ -11,6 +11,8 @@ import android.util.DisplayMetrics
 
 
 
+/* This class is a FrameLayout that displays a TextView that says "Loading..." when the ad is loading
+and nothing when the ad is not loading */
 class AdContainer(mContext: Context, attrs: AttributeSet?) : FrameLayout(mContext, attrs) {
     constructor(mContext: Context) : this(mContext, null)
 

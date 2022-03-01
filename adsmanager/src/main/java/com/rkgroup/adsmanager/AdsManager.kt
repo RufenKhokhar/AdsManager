@@ -24,6 +24,9 @@ private const val TAG = "AdsManager"
 
 object AdsManager {
     /**
+     *
+     * Populate your NativeAdView with NativeAd
+     *
      * @param nativeAd: Native that currently loaded
      * @param adView: Where you want to populate
      */
@@ -273,6 +276,15 @@ object AdsManager {
         )
     }
 
+    /**
+     * @param mContext:The Context object for your activity or application
+     * @param adUnit: AD unit id
+     * @param nativeAdOptions: set your own native ad options
+     * @see NativeAdOptions
+     * @param nativeAdLoadListener:  Ad Load callbacks
+     *
+     */
+
     @JvmStatic
     fun loadNativeAd(
         mContext: Context,
@@ -292,6 +304,13 @@ object AdsManager {
 
         adLoader.loadAd(AdRequest.Builder().build())
     }
+
+    /**
+     * @param mContext:The Context object for your activity or application
+     *@param adUnit: AD unit id
+     * @param nativeAdLoadListener:  Ad Load callbacks
+     *
+     */
 
     @JvmStatic
     fun loadNativeAd(
@@ -373,13 +392,23 @@ object AdsManager {
     }
 
     /**
-     * loads test native ad
+     * This method will load test ads
+     *
+     *@param mContext: The Context object for your activity or application
+     *@param nativeAdLoadListener:  Ad Load callbacks
+     *
      */
     @JvmStatic
     fun loadNativeAd(mContext: Context, nativeAdLoadListener: NativeAdLoadListener) {
         loadNativeAd(mContext, mContext.getString(R.string.native_test_ad_id), nativeAdLoadListener)
     }
 
+    /**
+     * @param mContext:The Context object for your activity or application
+     *@param adUnit: AD unit id
+     * @param interstitialAdLoadCallback: Load callbacks
+     *
+     */
     @JvmStatic
     fun loadInterstitialAd(
         mContext: Context,
@@ -394,6 +423,13 @@ object AdsManager {
         )
     }
 
+    /**
+     * This method will load test ads
+     *
+     * @param mContext:The Context object for your activity or application
+     * @param interstitialAdLoadCallback: Load callbacks
+     *
+     */
     @JvmStatic
     fun loadInterstitialAd(
         mContext: Context,
