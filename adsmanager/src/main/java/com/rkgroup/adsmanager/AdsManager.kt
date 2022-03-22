@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.google.android.gms.ads.*
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.nativead.MediaView
@@ -23,6 +24,20 @@ import com.google.android.gms.ads.nativead.NativeAdView
 private const val TAG = "AdsManager"
 
 object AdsManager {
+
+
+    /** This code is initializing the MobileAds SDK. */
+    @JvmStatic
+    fun initialize(context: Context, listener: OnInitializationCompleteListener) {
+        MobileAds.initialize(context, listener)
+    }
+
+    /** This code is initializing the MobileAds SDK. */
+    @JvmStatic
+    fun initialize(context: Context) {
+        MobileAds.initialize(context)
+    }
+
     /**
      *
      * Populate your NativeAdView with NativeAd
@@ -50,7 +65,7 @@ object AdsManager {
             adView.headlineView!!.visibility = View.INVISIBLE
         } else if (adView.headlineView != null) {
             adView.headlineView!!.visibility = View.VISIBLE
-            (adView.headlineView as TextView).text = nativeAd.body
+            (adView.headlineView as TextView).text = nativeAd.headline
             adView.headlineView!!.isSelected = true
         }
 
@@ -117,7 +132,8 @@ object AdsManager {
      * @param adContainer: Ad Container where do you want to show AD
      * @param adUnit: AD Unit ID
      * @param adSize: Target ad AD size
-     *@param adContainerVisibility: set adContainer Visibility on ad load Failed
+     * @see AdSize class
+     * @param adContainerVisibility: set adContainer Visibility on ad load Failed
      * @see View.VISIBLE
      * @see View.GONE
      * @see View.INVISIBLE
@@ -136,6 +152,7 @@ object AdsManager {
         mAdView.adUnitId = adUnit
         mAdView.adListener = object : AdListener() {
             override fun onAdLoaded() {
+                adContainer.visibility = View.VISIBLE
                 adContainer.removeAllViews()
                 adContainer.addView(mAdView)
             }

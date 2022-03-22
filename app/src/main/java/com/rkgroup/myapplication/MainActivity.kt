@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val adContainer:AdContainer = findViewById(R.id.adContainer)
+
         InterstitialAdManager.showInterstitialAdIfLoaded(this, fullScreenContentCallbacks = object :FullScreenContentCallback(){
             override fun onAdFailedToShowFullScreenContent(
                 adError: AdError
