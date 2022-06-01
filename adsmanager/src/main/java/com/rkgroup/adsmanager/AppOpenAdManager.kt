@@ -121,7 +121,9 @@ class AppOpenAdManager @JvmOverloads constructor(
                     }
                 }
             appOpenAd!!.fullScreenContentCallback = fullScreenContentCallback
-            appOpenAd!!.show(currentActivity!!)
+            if (InterstitialAdManager.isAdAlreadyShowing.not()) {
+                appOpenAd!!.show(currentActivity!!)
+            }
         } else {
             if (appOpenAdListener != null) {
                 appOpenAdListener.onAdCompleted()

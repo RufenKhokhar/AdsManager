@@ -1,6 +1,7 @@
 package com.rkgroup.myapplication
 
 import android.app.Application
+import com.rkgroup.adsmanager.AdsManager
 import com.rkgroup.adsmanager.AppOpenAdListener
 import com.rkgroup.adsmanager.AppOpenAdManager
 
@@ -9,6 +10,7 @@ class MyApplication : Application() {
     private lateinit var appOpenAdManager: AppOpenAdManager
     override fun onCreate() {
         super.onCreate()
+        AdsManager.initialize(this)
         /**
          * @param application: Application Context
          * @param adUnitID: ADUnitID for ad load

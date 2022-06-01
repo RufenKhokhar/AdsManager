@@ -26,13 +26,13 @@ private const val TAG = "AdsManager"
 object AdsManager {
 
 
-    /** This code is initializing the MobileAds SDK. */
+    /** This funaction is initializing the MobileAds SDK. */
     @JvmStatic
     fun initialize(context: Context, listener: OnInitializationCompleteListener) {
         MobileAds.initialize(context, listener)
     }
 
-    /** This code is initializing the MobileAds SDK. */
+    /** This funaction is initializing the MobileAds SDK. */
     @JvmStatic
     fun initialize(context: Context) {
         MobileAds.initialize(context)
@@ -148,7 +148,7 @@ object AdsManager {
         adContainerVisibility: Int = View.GONE
     ): AdView {
         val mAdView = AdView(adContainer.context)
-        mAdView.adSize = adSize
+        mAdView.setAdSize(adSize)
         mAdView.adUnitId = adUnit
         mAdView.adListener = object : AdListener() {
             override fun onAdLoaded() {
@@ -351,19 +351,17 @@ object AdsManager {
      * @see View.GONE
      * @see View.INVISIBLE
      *
+     * @return NativeAdView that currently loading
+     *
      */
     @JvmStatic
-    fun loadNativeAd(
-        adContainer: ViewGroup,
-        adUnit: String,
-        @LayoutRes layoutRes: Int,
-        adContainerVisibility: Int = View.GONE
-    ) {
+    fun loadNativeAd(adContainer: ViewGroup, adUnit: String, @LayoutRes layoutRes: Int, adContainerVisibility: Int = View.GONE): NativeAdView {
+        val nativeAdView: NativeAdView =
+            View.inflate(adContainer.context, layoutRes, null) as NativeAdView
         loadNativeAd(adContainer.context, adUnit, object : NativeAdLoadListener {
             override fun onNativeAdLoaded(nativeAd: NativeAd) {
                 adContainer.visibility = View.VISIBLE
-                val nativeAdView: NativeAdView =
-                    View.inflate(adContainer.context, layoutRes, null) as NativeAdView
+
                 adContainer.removeAllViews()
                 adContainer.addView(nativeAdView)
                 populateNativeAdView(nativeAd, nativeAdView)
@@ -373,6 +371,7 @@ object AdsManager {
                 adContainer.visibility = adContainerVisibility
             }
         })
+        return nativeAdView
     }
 
     /**
@@ -384,19 +383,17 @@ object AdsManager {
      * @see View.INVISIBLE
      * This loads Test ads for you
      *
+     * @return NativeAdView that currently loading
+     *
      */
 
     @JvmStatic
-    fun loadNativeAd(
-        adContainer: ViewGroup,
-        @LayoutRes layoutRes: Int,
-        adContainerVisibility: Int = View.GONE
-    ) {
+    fun loadNativeAd(adContainer: ViewGroup, @LayoutRes layoutRes: Int, adContainerVisibility: Int = View.GONE):NativeAdView {
+        val nativeAdView: NativeAdView =
+            View.inflate(adContainer.context, layoutRes, null) as NativeAdView
         loadNativeAd(adContainer.context, object : NativeAdLoadListener {
             override fun onNativeAdLoaded(nativeAd: NativeAd) {
                 adContainer.visibility = View.VISIBLE
-                val nativeAdView: NativeAdView =
-                    View.inflate(adContainer.context, layoutRes, null) as NativeAdView
                 adContainer.removeAllViews()
                 adContainer.addView(nativeAdView)
                 populateNativeAdView(nativeAd, nativeAdView)
@@ -406,6 +403,7 @@ object AdsManager {
                 adContainer.visibility = adContainerVisibility
             }
         })
+        return nativeAdView
     }
 
     /**

@@ -31,6 +31,9 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
  */
 object InterstitialAdManager {
     private const val TAG = "SplashAdManager"
+    const val ERROR_APP_OPEN_AD_IS_SHOWING = 5000
+    const val ERROR_INTERNET_NOT_CONNECTED = 410
+    const val ERROR_AD_NOT_LOADED = 404
 
     @JvmStatic
 
@@ -40,6 +43,9 @@ object InterstitialAdManager {
 
     @JvmStatic
     private var adAlreadyRequesting: Boolean = false
+
+    @JvmStatic
+     var isAdAlreadyShowing: Boolean = false
 
     private lateinit var progressDialog: AlertDialog
 
@@ -119,12 +125,14 @@ object InterstitialAdManager {
     private fun addDefaultFullScreenContentCallback() {
         interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+                isAdAlreadyShowing = false
                 interstitialAd = null
 
             }
 
             override fun onAdShowedFullScreenContent() {
                 interstitialAd = null
+                isAdAlreadyShowing = true
             }
 
         }
@@ -161,7 +169,13 @@ object InterstitialAdManager {
                 if (fullScreenContentCallbacks != null) {
                     addCustomFullScreenContentCallbacks(fullScreenContentCallbacks)
                 }
-                interstitialAd?.show(activity)
+                if (AppOpenAdManager.isShowingAppOpenAd.not()) {
+                    interstitialAd?.show(activity)
+                } else {
+                    fullScreenContentCallbacks?.onAdFailedToShowFullScreenContent(
+                        AdError(ERROR_APP_OPEN_AD_IS_SHOWING, "App open Ad is Showing!", "")
+                    )
+                }
             } else {
                 this.waitForAdLoading = adLoadWaitingTime
                 showProgress(activity)
@@ -170,12 +184,9 @@ object InterstitialAdManager {
                 }, 1000)
             }
         } else {
+
             fullScreenContentCallbacks?.onAdFailedToShowFullScreenContent(
-                AdError(
-                    410,
-                    "Internet is not connected!",
-                    ""
-                )
+                AdError(ERROR_INTERNET_NOT_CONNECTED, "Internet is not connected!", "")
             )
         }
     }
@@ -238,17 +249,20 @@ object InterstitialAdManager {
      * @param activity The activity that will show the ad.
      * @param fullScreenContentCallbacks FullScreenContentCallback? = null
      */
-    private fun showInterstitialAd(
-        activity: Activity,
-        fullScreenContentCallbacks: FullScreenContentCallback? = null
-    ) {
+    private fun showInterstitialAd(activity: Activity, fullScreenContentCallbacks: FullScreenContentCallback? = null) {
         when {
             interstitialAd != null -> {
                 hideProgress(activity)
                 if (fullScreenContentCallbacks != null) {
                     addCustomFullScreenContentCallbacks(fullScreenContentCallbacks)
                 }
-                interstitialAd?.show(activity)
+                if (AppOpenAdManager.isShowingAppOpenAd.not()) {
+                    interstitialAd?.show(activity)
+                } else {
+                    fullScreenContentCallbacks?.onAdFailedToShowFullScreenContent(
+                        AdError(ERROR_APP_OPEN_AD_IS_SHOWING, "App open Ad is Showing!", "")
+                    )
+                }
             }
             --waitForAdLoading > 1 -> {
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -259,7 +273,7 @@ object InterstitialAdManager {
                 waitForAdLoading = 5
                 hideProgress(activity)
                 fullScreenContentCallbacks?.onAdFailedToShowFullScreenContent(
-                    AdError(404, "Ad not loaded!", "")
+                    AdError(ERROR_AD_NOT_LOADED, "Ad not loaded!", "")
                 )
             }
         }
@@ -274,16 +288,19 @@ object InterstitialAdManager {
     private fun addCustomFullScreenContentCallbacks(fullScreenContentCallbacks: FullScreenContentCallback) {
         interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                isAdAlreadyShowing = false
                 interstitialAd = null
                 fullScreenContentCallbacks.onAdFailedToShowFullScreenContent(adError)
 
             }
 
             override fun onAdShowedFullScreenContent() {
+                isAdAlreadyShowing = true
                 fullScreenContentCallbacks.onAdShowedFullScreenContent()
             }
 
             override fun onAdDismissedFullScreenContent() {
+                isAdAlreadyShowing = false
                 interstitialAd = null
                 fullScreenContentCallbacks.onAdDismissedFullScreenContent()
             }
